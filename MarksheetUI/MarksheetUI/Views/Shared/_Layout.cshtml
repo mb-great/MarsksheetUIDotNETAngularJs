@@ -1,0 +1,29 @@
+﻿
+<!DOCTYPE html>
+<html ng-app="marksheetApp">
+
+<head>
+    <title>Marksheet Management</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
+    <!-- Add other stylesheets or scripts as needed -->
+</head>
+
+<body>
+
+
+
+    <div style=" width: 100%">
+        @RenderBody() <!-- This is the important line to render the content of the views -->
+        <ng-view></ng-view>
+    </div>
+
+    
+    <script src="https://code.angularjs.org/1.8.2/angular.js"></script>
+  
+    <script src="~/Scripts/MarksheetController.js"></script>
+    <!-- Add other scripts as needed -->
+
+</body>
+
+</html>

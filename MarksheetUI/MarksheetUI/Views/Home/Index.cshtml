@@ -1,0 +1,351 @@
+﻿
+<div ng-controller="marksheetController">
+
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Marksheet Management</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <!-- Use list items (li) for each navigation link -->
+                <li><a class="btn btn-toolbar" ng-click="changeView('SubjectsList')">Subjects List</a></li>
+                <li><a class="btn btn-toolbar" ng-click="changeView('TeachersList')">Teachers List</a></li>
+                <li><a class="btn btn-toolbar" ng-click="changeView('StudentsList')">Students List</a></li>
+                <li><a class="btn btn-toolbar" ng-click="changeView('MarksList')">Marks List</a></li>
+                <!-- Add other navigation links as needed -->
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Subjects List -->
+        <div ng-show="currentView === 'SubjectsList'">
+            <div style="display:flex;justify-content:space-between;align-items:center ">
+                <h2 style="display:inline">{{viewTitle}}</h2> <!-- Button to switch to create view -->
+                <button style="height: 34px" class="btn btn-primary" ng-click="viewCreateSubject()">Create</button>
+            </div>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Action</th>
+                </tr>
+                <tr ng-repeat="subject in subjects">
+                    <td>{{subject.SubjectId}}</td>
+                    <td>{{subject.SubjectName}}</td>
+                    <td>
+                        <!-- Buttons for actions -->
+                        <a class="btn btn-warning btn-sm" ng-click="viewUpdateSubject(subject)">Edit</a>
+                        <a class="btn btn-success btn-sm" ng-click="viewSubject(subject)">View</a>
+                        <a class="btn btn-danger btn-sm" ng-click="deleteSubject(subject.SubjectId)">Delete</a>
+                    </td>
+                </tr>
+                <tr ng-if="subjects.length === 0">
+                    <td colspan="7" style="text-align:center;font-weight:bolder">
+                        <div>
+                            <p>No data found</p>
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+            <!-- Button to switch to create view -->
+            <button class="btn btn-primary" ng-click="viewCreateSubject()">Create</button>
+        </div>
+
+        <!-- Subjects Form -->
+        <div ng-show="currentView ==='SubjectForm'">
+            <h2>{{viewTitle}}</h2>
+
+            <form name="createSubjectForm" ng-submit="mergeSubject()">
+                <div class="form-group">
+                    <label for="Name">Name :</label>
+                    <!-- Input for SubjectName -->
+                    <input type="text" placeholder="Subject Name" ng-disabled="Isdisabled" ng-model="subject.SubjectName" class="form-control" ng-required="true" />
+                </div>
+
+                <div class="form-group">
+                    <!-- Button to submit the form -->
+                    <button ng-if="btnRequired" ng-model="submitBtn" ng-click="submit()" class="btn btn-primary">{{buttonvalue}}</button>
+                    <!-- Button to cancel and go back to the Subjects List -->
+                    <a href="/" class="btn btn-default">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Teahers List -->
+        <div ng-show="currentView === 'TeachersList'">
+            <div style="display:flex;justify-content:space-between;align-items:center ">
+                <h2 style="display:inline">{{viewTitle}}</h2> <!-- Button to switch to create view -->
+                <button style="height: 34px" class="btn btn-primary" ng-click="viewCreateTeacher()">Create</button>
+            </div>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Address</th>
+                    <th>SubjectName</th>
+                    <th>Action</th>
+                </tr>
+                <tr ng-repeat="teacher in teachers">
+                    <td>{{teacher.TeacherId}}</td>
+                    <td>{{teacher.TeacherName}}</td>
+                    <td>{{teacher.Age}}</td>
+                    <td>{{teacher.Gender}}</td>
+                    <td>{{teacher.Address}}</td>
+                    <td>{{teacher.SubjectName}}</td>
+                    <td>
+                        <!-- Buttons for actions -->
+                        <a class="btn btn-warning btn-sm" ng-click="viewUpdateTeacher(teacher)">Edit</a>
+                        <a class="btn btn-success btn-sm" ng-click="viewTeacher(teacher)">View</a>
+                        <a class="btn btn-danger btn-sm" ng-click="deleteTeacher(teacher.TeacherId)">Delete</a>
+                    </td>
+                </tr>
+                <tr ng-if="teachers.length === 0">
+                    <td colspan="7" style="text-align:center;font-weight:bolder">
+                        <div>
+                            <p>No data found</p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+        <!-- Teachers Form -->
+        <div ng-show="currentView ==='TeacherForm'">
+            <h2>{{viewTitle}}</h2>
+
+            <form name="createTeacherForm" ng-submit="mergeTeacher()">
+                <div class="form-group">
+                    <label for="Name">Name :</label>
+                    <!-- Input for SubjectName -->
+                    <input type="text" placeholder="Teacher Name" ng-disabled="Isdisabled" ng-model="teacher.TeacherName" class="form-control" ng-required="true" />
+                </div>
+
+                <div class="form-group">
+                    <label for="Age">Age :</label>
+                    <!-- Input for SubjectName -->
+                    <input type="text" placeholder="Age" ng-disabled="Isdisabled" ng-model="teacher.Age" class="form-control" ng-required="true" />
+                </div>
+
+                <div class="form-group">
+                    <label>Gender :</label>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" ng-model="teacher.Gender" value="Male" /> Male
+                        </label>
+                        <label>
+                            <input type="radio" ng-model="teacher.Gender" value="Female" /> Female
+                        </label>
+                    </div>
+                </div>
+
+
+                <select id="Subject" ng-model="teacher.Speciality" class="form-control" ng-disabled="Isdisabled" ng-options="subject.SubjectId as subject.SubjectName for subject in subjects" ng-required="true">
+                    <option value="">Select Subject</option>
+                </select>
+
+                <div class="form-group">
+                    <label for="Address">Address :</label>
+                    <!-- Textarea for Teacher Name -->
+                    <textarea placeholder="Address" ng-disabled="Isdisabled" ng-model="teacher.Address" class="form-control" ng-required="true"></textarea>
+                </div>
+
+
+                <div class="form-group">
+                    <!-- Button to submit the form -->
+                    <button ng-if="btnRequired" ng-model="submitBtn" ng-click="submit()" class="btn btn-primary">{{buttonvalue}}</button>
+                    <!-- Button to cancel and go back to the Subjects List -->
+                    <a href="/" class="btn btn-default">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Students List -->
+        <div ng-show="currentView === 'StudentsList'">
+            <div style="display:flex;justify-content:space-between;align-items:center ">
+                <h2 style="display:inline">{{viewTitle}}</h2> <!-- Button to switch to create view -->
+                <button style="height: 34px" class="btn btn-primary" ng-click="viewCreateStudent()">Create</button>
+            </div>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Address</th>
+                    <th>Class</th>
+                    <th>Action</th>
+                </tr>
+                <tr ng-repeat="student in students">
+                    <td>{{student.StudentId}}</td>
+                    <td>{{student.StudentName}}</td>
+                    <td>{{student.Age}}</td>
+                    <td>{{student.Gender}}</td>
+                    <td>{{student.Address}}</td>
+                    <td>{{student.ClassId}}</td>
+                    <td>
+                        <!-- Buttons for actions -->
+                        <a class="btn btn-warning btn-sm" ng-click="viewUpdateStudent(student);">Edit</a>
+                        <a class="btn btn-success btn-sm" ng-click="viewStudent(student)">View</a>
+                        <a class="btn btn-danger btn-sm" ng-click="deleteStudent(student.StudentId)">Delete</a>
+                    </td>
+                </tr>
+                <tr ng-if="students.length === 0">
+                    <td colspan="7" style="text-align:center;font-weight:bolder">
+                        <div>
+                            <p>No data found</p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Students Form -->
+        <div ng-show="currentView ==='StudentForm'">
+            <h2>{{viewTitle}}</h2>
+
+            <form name="createStudentForm" ng-submit="mergeStudent()">
+                <div class="form-group">
+                    <label for="Name">Name :</label>
+                    <!-- Input for SubjectName -->
+                    <input type="text" placeholder="Student Name" ng-disabled="Isdisabled" ng-model="student.StudentName" class="form-control" ng-required="true" />
+                </div>
+
+                <div class="form-group">
+                    <label for="Age">Age :</label>
+                    <!-- Input for SubjectName -->
+                    <input type="text" placeholder="Age" ng-disabled="Isdisabled" ng-model="student.Age" class="form-control" ng-required="true" />
+                </div>
+
+                <div class="form-group">
+                    <label>Gender :</label>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" ng-model="student.Gender" value="Male" /> Male
+                        </label>
+                        <label>
+                            <input type="radio" ng-model="student.Gender" value="Female" /> Female
+                        </label>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="Class Id">Class Id :</label>
+                    <!-- Input for SubjectName -->
+                    <input type="text" placeholder="Class Id" ng-disabled="Isdisabled" ng-model="student.ClassId" class="form-control" ng-required="true" />
+                </div>
+
+                <div class="form-group">
+                    <label for="Address">Address :</label>
+                    <!-- Textarea for Teacher Name -->
+                    <textarea placeholder="Address" ng-disabled="Isdisabled" ng-model="student.Address" class="form-control" ng-required="true"></textarea>
+                </div>
+
+
+                <div class="form-group">
+                    <!-- Button to submit the form -->
+                    <button ng-if="btnRequired" ng-model="submitBtn" ng-click="submit()" class="btn btn-primary">{{buttonvalue}}</button>
+                    <!-- Button to cancel and go back to the Subjects List -->
+                    <a href="/" class="btn btn-default">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Marks List -->
+        <div ng-show="currentView === 'MarksList'">
+            <div style="display:flex;justify-content:space-between;align-items:center ">
+                <h2 style="display:inline">{{viewTitle}}</h2> <!-- Button to switch to create view -->
+                <button style="height: 34px" class="btn btn-primary" ng-click="viewCreateMark()">Create</button>
+            </div>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th>Id</th>
+                    <th>Marks</th>
+                    <th>Student Name</th>
+                    <th>Teacher Name</th>
+                    <th>Subject name</th>
+                    <th>Class</th>
+                    <th>Action</th>
+                </tr>
+                <tr ng-repeat="mark in marks">
+                    <td>{{mark.MarkSheetId}}</td>
+                    <td>{{mark.Marks}}</td>
+                    <td>{{mark.StudentName}}</td>
+                    <td>{{mark.TeacherName}}</td>
+                    <td>{{mark.SubjectName}}</td>
+                    <td>{{mark.ClassId}}</td>
+                    <td>
+                        <!-- Buttons for actions -->
+                        <a class="btn btn-warning btn-sm" ng-click="viewUpdateMark(mark);">Edit</a>
+                        <a class="btn btn-success btn-sm" ng-click="viewMark(mark)">View</a>
+                        <a class="btn btn-danger btn-sm" ng-click="deleteMark(mark.MarkSheetId)">Delete</a>
+                    </td>
+                </tr>
+                <tr ng-if="marks.length === 0">
+                    <td colspan="7" style="text-align:center;font-weight:bolder">
+                        <div>
+                            <p>No data found</p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Marks Form -->
+        <div ng-show="currentView ==='MarksForm'">
+            <h2>{{viewTitle}}</h2>
+
+            <form name="createStudentForm" ng-submit="mergeMark()">
+                <div class="form-group">
+                    <label for="Subject">Subject :</label>
+                    <select id="Subject" ng-model="mark.StudentId" class="form-control" ng-disabled="Isdisabled" ng-options="student.StudentId as student.StudentName for student in students | orderBy:'StudentName'" ng-required="true">
+                        <option value="">Select Student</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="Marks">Marks :</label>
+                    <!-- Input for SubjectName --> 
+                    <input type="text" placeholder="Marks" ng-disabled="Isdisabled1" ng-model="mark.Marks" class="form-control" ng-required="true" />
+                </div>
+                <div class="form-group">
+                    <label for="Subject">Subject :</label>
+                    <select id="Subject" ng-change="getTeachersForSubject(mark.SubjectId)" ng-model="mark.SubjectId" class="form-control" ng-disabled="Isdisabled" ng-options="subject.SubjectId as subject.SubjectName for subject in subjects" ng-required="true">
+                        <option value="">Select Subject</option>
+                    </select>
+                </div>
+                
+
+                <div class="form-group">
+                    <label for="Teacher">Teacher :</label>
+                    <select id="Teacher"  ng-model="mark.TeacherId" class="form-control"  ng-disabled="Isdisabled" ng-options="teacher.TeacherId as teacher.TeacherName for teacher in teachers | orderBy:'TeacherName'" ng-required="true">
+                        <option value="">Select Teacher</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <!-- Button to submit the form -->
+                    <button ng-if="btnRequired" ng-model="submitBtn" ng-click="submit()" class="btn btn-primary">{{buttonvalue}}</button>
+                    <!-- Button to cancel and go back to the Subjects List -->
+                    <a href="/" class="btn btn-default">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+</div>
+<!-- Include AngularJS library -->
+
+<script src="https://code.angularjs.org/1.8.2/angular.js"></script>
+
+<!-- Include your AngularJS controller script -->
+<script src="~/Scripts/MarksheetController.js"></script>
